@@ -1,3 +1,8 @@
+// Copyright (c) 2018 ace (https://github.com/ru-ace)
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 #include "vdbDebug.h"
 #include <EEPROM.h>
 
@@ -77,8 +82,6 @@ void VDB_DEBUG_dump_eeprom()
 
             sprintf((char *)buffer, "\n 0x%05X: ", address);
             VDB_DEBUG_SERIAL.print((char *)buffer);
-
-            //memset(buffer, 32, VDB_DEBUG_EEPROM_VALUES_IN_LINE);
         }
         buffer[address % VDB_DEBUG_EEPROM_VALUES_IN_LINE] = value;
 
