@@ -3,16 +3,16 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBPROVIDER_H
-#define CVDBPROVIDER_H
+#ifndef CAVSPROVIDER_H
+#define CAVSPROVIDER_H
 
 #include <Arduino.h>
 
-class cvdbProvider
+class cavsProvider
 {
 public:
   virtual uint8_t read(int address) = 0;
   virtual void write(int address, uint8_t value) = 0;
 };
 
-#endif //CVDBPROVIDER_H
+#endif //CAVSPROVIDER_H

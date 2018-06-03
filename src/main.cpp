@@ -4,81 +4,84 @@
 // https://opensource.org/licenses/MIT
 
 #include <Arduino.h>
-#include "vdbDebug.h"
-#include "cvdbProviderEEPROM.h"
-#include "cvdbStorage.h"
 
-cvdbProviderEEPROM vdbProviderEEPROM;
-cvdbStorage *vdb;
+#define AVS_DEBUG
+#include "avsDebug.h"
 
-void vdb_erase_eeprom();
+#include "cavsProviderEEPROM.h"
+#include "cavsStorage.h"
 
-void vdb_test_1_simple();
-void vdb_test_2_variable_list_of_values();
-void vdb_test_3_seek();
-void vdb_test_4_multi_vat();
+cavsProviderEEPROM avsProviderEEPROM;
+cavsStorage *avs;
+
+void avs_erase_eeprom();
+
+void avs_test_1_simple();
+void avs_test_2_variable_list_of_values();
+void avs_test_3_seek();
+void avs_test_4_multi_vat();
 
 void setup()
 {
 
-    VDB_DEBUG_START;
-    vdb_erase_eeprom();
-    VDB_DEBUG_LOG_FREEMEM;
+    AVS_DEBUG_START;
+    avs_erase_eeprom();
+    AVS_DEBUG_LOG_FREEMEM;
 
-    vdb = new cvdbStorage(&vdbProviderEEPROM, &vdbProviderEEPROM);
-    //VDB_DEBUG_DUMP_EEPROM;
-    VDB_DEBUG_LOG_FREEMEM;
-    //vdb_test_1_simple();
-    vdb_test_2_variable_list_of_values();
-    //vdb_test_3_seek();
-    //vdb_test_4_multi_vat();
-    VDB_DEBUG_LOG_FREEMEM;
-    VDB_DEBUG_LOG("That's all folks!");
+    avs = new cavsStorage(&avsProviderEEPROM, &avsProviderEEPROM);
+    //AVS_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG_FREEMEM;
+    //avs_test_1_simple();
+    avs_test_2_variable_list_of_values();
+    //avs_test_3_seek();
+    //avs_test_4_multi_vat();
+    AVS_DEBUG_LOG_FREEMEM;
+    AVS_DEBUG_LOG("That's all folks!");
 }
-void vdb_test_4_multi_vat()
+void avs_test_4_multi_vat()
 {
-    vdb->format();
+    avs->format();
 
     uint8_t string_vat0[] = "0123456";
-    VDB_DEBUG_LOG(" ================= Insert new val [0123456]=================");
-    vdbid_t new_val_id = vdb->insert(string_vat0, sizeof(string_vat0));
-    VDB_DEBUG_LOG("new_val_id = ", new_val_id);
-    VDB_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG(" ================= Insert new val [0123456]=================");
+    valueid_t new_val_id = avs->insert(string_vat0, sizeof(string_vat0));
+    AVS_DEBUG_LOG("new_val_id = ", new_val_id);
+    AVS_DEBUG_DUMP_EEPROM;
     uint8_t string_vat1[] = "ABCDEFG";
-    VDB_DEBUG_LOG(" ================= Insert new val [ABCDEFG]=================");
-    new_val_id = vdb->insert(string_vat1, sizeof(string_vat1));
-    VDB_DEBUG_LOG("new_val_id = ", new_val_id);
+    AVS_DEBUG_LOG(" ================= Insert new val [ABCDEFG]=================");
+    new_val_id = avs->insert(string_vat1, sizeof(string_vat1));
+    AVS_DEBUG_LOG("new_val_id = ", new_val_id);
 
-    VDB_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_DUMP_EEPROM;
 }
 
-void vdb_test_3_seek()
+void avs_test_3_seek()
 {
-    cvdbValue *root;
+    cavsValue *root;
     int i;
-    vdb->format();
-    VDB_DEBUG_LOG("==== Create root value obj ===");
-    root = new cvdbValue(vdb, VDBS_ROOT_VDBID);
+    avs->format();
+    AVS_DEBUG_LOG("==== Create root value obj ===");
+    root = new cavsValue(avs, AVS_ROOT_VALUE_ID);
     /*
-    VDB_DEBUG_LOG("==== Fill with 'x'");
+    AVS_DEBUG_LOG("==== Fill with 'x'");
 
     for (i = 0; i < 61; i++)
         root->write8('x');
 
     root->close();
     */
-    VDB_DEBUG_LOG("==== SEEK  10  ==================================");
+    AVS_DEBUG_LOG("==== SEEK  10  ==================================");
     root->seek(10);
     for (i = 0; i < 8; i++)
         root->write8('X');
     root->close();
 
-    VDB_DEBUG_LOG("==== BACKWARD SEEK  ==================================");
+    AVS_DEBUG_LOG("==== BACKWARD SEEK  ==================================");
     root->seek(9);
     root->write8(0);
     for (i = 8; i > 1; i--)
     {
-        VDB_DEBUG_LOG("seek ", i);
+        AVS_DEBUG_LOG("seek ", i);
         root->seek(i);
         root->write8('0' + i);
     }
@@ -88,108 +91,108 @@ void vdb_test_3_seek()
 
     int val_len = 0;
     uint8_t *val;
-    VDB_DEBUG_LOG("==== substr(root, 2,8) ===================================");
-    val = vdb->substr(VDBS_ROOT_VDBID, 2, 8);
-    VDB_DEBUG_LOG("len = ", val_len);
-    VDB_DEBUG_LOG("val = ", (char *)val);
+    AVS_DEBUG_LOG("==== substr(root, 2,8) ===================================");
+    val = avs->substr(AVS_ROOT_VALUE_ID, 2, 8);
+    AVS_DEBUG_LOG("len = ", val_len);
+    AVS_DEBUG_LOG("val = ", (char *)val);
     delete val;
 
     uint8_t substring[] = "abcdefg";
-    VDB_DEBUG_LOG("==== replace(root, 2, 'abcdefg', 8) ===================================");
-    vdb->replace(VDBS_ROOT_VDBID, 2, substring, sizeof(substring));
+    AVS_DEBUG_LOG("==== replace(root, 2, 'abcdefg', 8) ===================================");
+    avs->replace(AVS_ROOT_VALUE_ID, 2, substring, sizeof(substring));
 
-    VDB_DEBUG_LOG("final lenght = ", root->length());
-    VDB_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG("final lenght = ", root->length());
+    AVS_DEBUG_DUMP_EEPROM;
 }
-void vdb_test_2_variable_list_of_values()
+void avs_test_2_variable_list_of_values()
 {
-    vdbid_t record_vdbid;
-    cvdbValue *root;
-    cvdbValue *record;
+    valueid_t record_value_id;
+    cavsValue *root;
+    cavsValue *record;
 
-    vdb->format();
-    VDB_DEBUG_LOG("==== Create root value obj ===");
-    root = new cvdbValue(vdb, VDBS_ROOT_VDBID);
-    VDB_DEBUG_LOG("==== Create record value obj ===");
-    record = new cvdbValue(vdb);
-    VDB_DEBUG_LOG("==== WRITE SECTION ===================================");
+    avs->format();
+    AVS_DEBUG_LOG("==== Create root value obj ===");
+    root = new cavsValue(avs, AVS_ROOT_VALUE_ID);
+    AVS_DEBUG_LOG("==== Create record value obj ===");
+    record = new cavsValue(avs);
+    AVS_DEBUG_LOG("==== WRITE SECTION ===================================");
     for (int i = 0; i < 10; i++)
     {
-        VDB_DEBUG_LOG("===== Record ", i);
+        AVS_DEBUG_LOG("===== Record ", i);
         record->create();
 
         for (int j = 0; j < i + 1; j++)
         {
-            VDB_DEBUG_LOG("====== write char ", i);
+            AVS_DEBUG_LOG("====== write char ", i);
             record->write8('0' + i);
         }
         record->write8(0);
-        record_vdbid = record->close();
-        VDB_DEBUG_LOG(" add to root record_vdbid = ", record_vdbid);
-        root->write((uint8_t *)&record_vdbid, sizeof(record_vdbid));
+        record_value_id = record->close();
+        AVS_DEBUG_LOG(" add to root record_value_id = ", record_value_id);
+        root->write((uint8_t *)&record_value_id, sizeof(record_value_id));
     }
     root->close();
 
     delete root;
     delete record;
 
-    VDB_DEBUG_DUMP_EEPROM;
-    VDB_DEBUG_LOG("==== READ SECTION ===================================");
+    AVS_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG("==== READ SECTION ===================================");
     int val_len = 0;
     uint8_t *val;
 
-    VDB_DEBUG_LOG("==== Create root value obj ===");
-    root = new cvdbValue(vdb, VDBS_ROOT_VDBID);
+    AVS_DEBUG_LOG("==== Create root value obj ===");
+    root = new cavsValue(avs, AVS_ROOT_VALUE_ID);
     while (!root->eof())
     {
-        VDB_DEBUG_LOG("Read next record_vdbid from root");
-        root->read((uint8_t *)&record_vdbid, sizeof(record_vdbid));
-        VDB_DEBUG_LOG("Select record with record_vdbid = ", record_vdbid);
-        val = vdb->select(record_vdbid, &val_len);
-        VDB_DEBUG_LOG("len = ", val_len);
-        VDB_DEBUG_LOG("val = ", (char *)val);
+        AVS_DEBUG_LOG("Read next record_value_id from root");
+        root->read((uint8_t *)&record_value_id, sizeof(record_value_id));
+        AVS_DEBUG_LOG("Select record with record_value_id = ", record_value_id);
+        val = avs->select(record_value_id, &val_len);
+        AVS_DEBUG_LOG("len = ", val_len);
+        AVS_DEBUG_LOG("val = ", (char *)val);
         delete val;
     }
 
     delete root;
 }
 
-void vdb_test_1_simple()
+void avs_test_1_simple()
 {
     int val_len = 0;
     uint8_t *val;
-    vdb->format();
-    VDB_DEBUG_LOG(" ================= Update Root with [ABCD] =================");
+    avs->format();
+    AVS_DEBUG_LOG(" ================= Update Root with [ABCD] =================");
     uint8_t string1[] = "ABCD";
-    vdb->update(VDBS_ROOT_VDBID, string1, sizeof(string1));
-    VDB_DEBUG_DUMP_EEPROM;
+    avs->update(AVS_ROOT_VALUE_ID, string1, sizeof(string1));
+    AVS_DEBUG_DUMP_EEPROM;
 
     uint8_t string2[] = "0123";
-    VDB_DEBUG_LOG(" ================= Insert new val [0123]=================");
-    vdbid_t new_val_id = vdb->insert(string2, sizeof(string2));
-    VDB_DEBUG_LOG("new_val_id = ", new_val_id);
-    VDB_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG(" ================= Insert new val [0123]=================");
+    valueid_t new_val_id = avs->insert(string2, sizeof(string2));
+    AVS_DEBUG_LOG("new_val_id = ", new_val_id);
+    AVS_DEBUG_DUMP_EEPROM;
     uint8_t string3[] = "ABCDEFG";
-    VDB_DEBUG_LOG(" ================= Update Root with [ABCDEFG] =================");
-    vdb->update(VDBS_ROOT_VDBID, string3, sizeof(string3));
-    VDB_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG(" ================= Update Root with [ABCDEFG] =================");
+    avs->update(AVS_ROOT_VALUE_ID, string3, sizeof(string3));
+    AVS_DEBUG_DUMP_EEPROM;
 
-    VDB_DEBUG_LOG(" ================= Read inserted val =================");
-    val = vdb->select(new_val_id, &val_len);
-    VDB_DEBUG_LOG("len = ", val_len);
-    VDB_DEBUG_LOG("val = ", (char *)val);
+    AVS_DEBUG_LOG(" ================= Read inserted val =================");
+    val = avs->select(new_val_id, &val_len);
+    AVS_DEBUG_LOG("len = ", val_len);
+    AVS_DEBUG_LOG("val = ", (char *)val);
     delete val;
 
-    VDB_DEBUG_LOG(" ================= Read Root val =================");
-    val = vdb->select(VDBS_ROOT_VDBID, &val_len);
-    VDB_DEBUG_LOG("len = ", val_len);
-    VDB_DEBUG_LOG("val = ", (char *)val);
+    AVS_DEBUG_LOG(" ================= Read Root val =================");
+    val = avs->select(AVS_ROOT_VALUE_ID, &val_len);
+    AVS_DEBUG_LOG("len = ", val_len);
+    AVS_DEBUG_LOG("val = ", (char *)val);
     delete val;
 }
 
-void vdb_erase_eeprom()
+void avs_erase_eeprom()
 {
-    VDB_DEBUG_LOG("Erease EEPROM with 0xEE");
+    AVS_DEBUG_LOG("Erease EEPROM with 0xEE");
     for (int address = 0; address <= E2END; address++)
         EEPROM.write(address, 0xee);
 }

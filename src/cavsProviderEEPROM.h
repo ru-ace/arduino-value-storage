@@ -3,13 +3,13 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBPROVIDEREEPROM_H
-#define CVDBPROVIDEREEPROM_H
+#ifndef CAVSPROVIDEREEPROM_H
+#define CAVSPROVIDEREEPROM_H
 
-#include "cvdbProvider.h"
+#include "cavsProvider.h"
 #include <EEPROM.h>
 
-class cvdbProviderEEPROM : public cvdbProvider
+class cavsProviderEEPROM : public cavsProvider
 {
   public:
     uint8_t read(int address)
@@ -22,4 +22,4 @@ class cvdbProviderEEPROM : public cvdbProvider
     }
 };
 
-#endif //CVDBPROVIDEREEPROM_H
+#endif //CAVSPROVIDEREEPROM_H

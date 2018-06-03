@@ -3,22 +3,22 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBVALUE_H
-#define CVDBVALUE_H
+#ifndef CAVSVALUE_H
+#define CAVSVALUE_H
 
-#include "cvdbStorage.h"
-class cvdbStorage;
+#include "cavsStorage.h"
+class cavsStorage;
 
-class cvdbValue
+class cavsValue
 {
 private:
-  cvdbStorage *_vdbs;
+  cavsStorage *_avs;
 
   bool _is_root_value = false; // root value - has some hacks for store _tail_length
 
-  int _offset = 0;             // current offset in bytes from beginning of the value
-  uint8_t _offset_vat_address; // address_id of _offset
-  uint8_t _offset_vat_offset;  // inSector offset of _offset
+  int _offset = 0;                 // current offset in bytes from beginning of the value
+  uint8_t _offset_address;         // address of sector for current _offset
+  uint8_t _offset_insector_offset; // inSector offset of _offset
 
   int _allocated_sectors = 0; // amount of allocated sectors for value.
   int _length = 0;            // value length in bytes
@@ -29,12 +29,12 @@ private:
   uint8_t _vat_tail_address; // address of last sector used by value
 
 public:
-  cvdbValue(cvdbStorage *vdbStorage);
-  cvdbValue(cvdbStorage *vdbStorage, vdbid_t vdb_id);
+  cavsValue(cavsStorage *avsStorage);
+  cavsValue(cavsStorage *avsStorage, valueid_t value_id);
 
   bool create(int length = 0);
-  void open(vdbid_t vdb_id);
-  vdbid_t close();
+  void open(valueid_t value_id);
+  valueid_t close();
 
   bool eof();
   int length();
@@ -53,4 +53,4 @@ public:
   bool write32(uint32_t data);
 };
 
-#endif //CVDBVALUE_H
+#endif //CAVSVALUE_H
