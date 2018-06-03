@@ -20,13 +20,15 @@ Meanwhile, i think it can be usable in current state.
 ## Description
 
 #### Simple
+
 This library will allow you to store fragmented dynamic-length variables in EEPROM. 
 
 #### Complex
+
 I assume, that you are familiar with concept of [FAT(File Allocation Table)](https://en.wikipedia.org/wiki/Design_of_the_FAT_file_system#FAT) and [Singly linked list](https://en.wikipedia.org/wiki/Linked_list#Singly_linked_list).
 
-Storage devided into two parts: *vat_storage* and *data_storage*.
-*vat_storage* - contains singly linked lists, like FAT8, but with one difference: it can contains several *vat(Value Allocation Table)* (256 bytes each). Each element(byte) of each *vat* has corresponding sector in *data_storage*.
+Storage devided into two parts: *vat_storage* and *data_storage*.<br/>
+*vat_storage* - contains singly linked lists, like FAT8, but with one difference: it can contains several *vat(Value Allocation Table)* (256 bytes each). Each element(byte) of each *vat* has corresponding sector in *data_storage*.<br/>
 *data_storage* - divided by sectors of *AVS_DS_SECTOR_SIZE* bytes, which contains *values* data
 
 There is *root_value* which you can access using *value_id = AVS_ROOT_VALUE_ID*. Assumed that you will use it as entry point for accessing your data. 
@@ -37,33 +39,40 @@ There is two linked classes:
 
 
 ## Documentation
-In first place of TODO list, but if you want try this lib before documentation appears,
-there is one non-obvious rule:
+
+In first place of TODO list, but if you want try this lib before documentation appears,<br/>there is one non-obvious rule:<br/>
 **If you update *value* and its length was changed - you must save new *value_id* returned by:** 
+
 * *cavsStorage::*[*update()*|*replace()*]
 * *cavsValue::close()* - you must execute this method even for *root_value*, when it was updated and its length was changed (but in this case you don't need to save it)  
 
 **Cause:** 
+
 * *value_id* contains part of *value*'s length
 * in future releases *value* may be reallocated to other *vat*, which aslo contains in *value_id* 
 
 **Structure of *value_id* with type uint16_t:** 
-2 bytes, letter=bit : TTTTVVVV AAAAAAAA
-T = length of tail in last sector in bytes (for *root_value* stored in *vat[AVS_VAT_END_ID]*)
-V = id of *vat*
-A = head address in *vat*
+
+* 2 bytes, letter=bit : TTTTVVVV AAAAAAA
+* T = length of tail in last sector in bytes (for *root_value* stored in *vat[AVS_VAT_END_ID]*)
+* V = id of *vat* 
+* A = head address in *vat* 
+
 Please note, that this structure may be fully reconfigured in *avsConfig.h*
 
-Please read comments in *avsConfig.h* and change it for your storage.
+Please read comments in *avsConfig.h* and change it for your storage.<br/>
 Useful examples of usage you may found in *main.cpp*
 
 ## Limitations
+
 * Maximum size of *data_storage* depends on size of *valueid_t* type.
   * Current *uint16_t* gives 65 535 bytes.
   * Using *uint32_t* gives access to 16 777 216 bytes.
 * Max sector size of *data_storage* (*AVS_DS_SECTOR_SIZE*) = 255 bytes
 * Theoretical max length of *value* = 254 * *AVS_DS_SECTOR_SIZE* (in case when only one *value* used *vat*)
-## TODO
+
+## ToDo
+
 * Documentation/JSDoc
 * Reallocation of *value* to new *vat* when there no space in current *vat*.
 * No More Space & "foolproof" checks and actions
