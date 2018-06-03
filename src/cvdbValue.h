@@ -3,8 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBVALUE
-#define CVDBVALUE
+#ifndef CVDBVALUE_H
+#define CVDBVALUE_H
 
 #include "cvdbStorage.h"
 class cvdbStorage;
@@ -53,4 +53,4 @@ public:
   bool write32(uint32_t data);
 };
 
-#endif //CVDBVALUE
+#endif //CVDBVALUE_H

@@ -3,8 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBPROVIDER
-#define CVDBPROVIDER
+#ifndef CVDBPROVIDER_H
+#define CVDBPROVIDER_H
 
 #include <Arduino.h>
 
@@ -15,4 +15,4 @@ public:
   virtual void write(int address, uint8_t value) = 0;
 };
 
-#endif //CVDBPROVIDER
+#endif //CVDBPROVIDER_H

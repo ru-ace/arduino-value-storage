@@ -3,8 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBSTORAGE
-#define CVDBSTORAGE
+#ifndef CVDBSTORAGE_H
+#define CVDBSTORAGE_H
 
 #include <Arduino.h>
 
@@ -68,8 +68,8 @@ class cvdbValue;
 class cvdbStorage
 {
 private:
-  cvdbProvider *_pvat; //VAT Provider
-  cvdbProvider *_pds;  // DS Provider
+  cvdbProvider *_pvat; // VAT Provider
+  cvdbProvider *_pds;  //  DS Provider
 
   bool start();
 
@@ -103,16 +103,12 @@ public:
 
   uint8_t ds_read(vatid_t vat_id, uint8_t vat_address, vtail_t offset);
   void ds_write(vatid_t vat_id, uint8_t vat_address, vtail_t offset, uint8_t data);
-  /**
-   * @brief Get free sector address in VAT vat_id
-   * 
-   * @param vat_id - ID of VAT
-   * @return uint8_t = VDBS_VAT_FREE_ID if not free sector found
-  */
-  uint8_t get_free_vat_address(vatid_t vat_id);
+
   vatid_t get_emptiest_vat_id();
 
+private:
   void update_vat_freespace(vatid_t vat_id);
+  uint8_t get_free_vat_address(vatid_t vat_id);
 };
 
-#endif //CVDBSTORAGE
+#endif //CVDBSTORAGE_H

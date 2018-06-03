@@ -163,7 +163,7 @@ void vdb_test_1_simple()
     uint8_t string1[] = "ABCD";
     vdb->update(VDBS_ROOT_VDBID, string1, sizeof(string1));
     VDB_DEBUG_DUMP_EEPROM;
-    /*
+
     uint8_t string2[] = "0123";
     VDB_DEBUG_LOG(" ================= Insert new val [0123]=================");
     vdbid_t new_val_id = vdb->insert(string2, sizeof(string2));
@@ -173,8 +173,7 @@ void vdb_test_1_simple()
     VDB_DEBUG_LOG(" ================= Update Root with [ABCDEFG] =================");
     vdb->update(VDBS_ROOT_VDBID, string3, sizeof(string3));
     VDB_DEBUG_DUMP_EEPROM;
-    */
-    /*
+
     VDB_DEBUG_LOG(" ================= Read inserted val =================");
     val = vdb->select(new_val_id, &val_len);
     VDB_DEBUG_LOG("len = ", val_len);
@@ -186,7 +185,6 @@ void vdb_test_1_simple()
     VDB_DEBUG_LOG("len = ", val_len);
     VDB_DEBUG_LOG("val = ", (char *)val);
     delete val;
-*/
 }
 
 void vdb_erase_eeprom()

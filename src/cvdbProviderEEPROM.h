@@ -3,8 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-#ifndef CVDBPROVIDEREEPROM
-#define CVDBPROVIDEREEPROM
+#ifndef CVDBPROVIDEREEPROM_H
+#define CVDBPROVIDEREEPROM_H
 
 #include "cvdbProvider.h"
 #include <EEPROM.h>
@@ -22,4 +22,4 @@ class cvdbProviderEEPROM : public cvdbProvider
     }
 };
 
-#endif //CVDBPROVIDEREEPROM
+#endif //CVDBPROVIDEREEPROM_H
