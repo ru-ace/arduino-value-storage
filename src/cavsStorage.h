@@ -19,13 +19,17 @@ private:
   cavsProvider *_pds;  //  DS Provider
 
   uint8_t vat_freespace[AVS_VAT_COUNT];
+
   bool start();
+  void update_vat_freespace(vatid_t vat_id);
+  uint8_t get_free_vat_address(vatid_t vat_id);
 
 public:
-
   cavsStorage(cavsProvider *vatProvider, cavsProvider *dsProvider);
 
   void format();
+
+  vatid_t get_emptiest_vat_id();
 
   valueid_t allocate(vatid_t vat_id, int length);
   valueid_t move(valueid_t src_value_id, vatid_t dst_vat_id);
@@ -33,10 +37,10 @@ public:
 
   valueid_t insert(uint8_t *data, int data_length);
   valueid_t update(valueid_t value_id, uint8_t *data, int data_length);
+  valueid_t replace(valueid_t value_id, int pos, uint8_t *data, int data_length);
 
   uint8_t *select(valueid_t value_id, int *length);
   uint8_t *substr(valueid_t value_id, int pos, int length);
-  valueid_t replace(valueid_t value_id, int pos, uint8_t *data, int data_length);
 
   cavsValue *value_get(valueid_t value_id);
   cavsValue *value_add();
@@ -50,12 +54,6 @@ public:
 
   uint8_t ds_read(vatid_t vat_id, uint8_t vat_address, vtail_t offset);
   void ds_write(vatid_t vat_id, uint8_t vat_address, vtail_t offset, uint8_t data);
-
-  vatid_t get_emptiest_vat_id();
-
-private:
-  void update_vat_freespace(vatid_t vat_id);
-  uint8_t get_free_vat_address(vatid_t vat_id);
 };
 
 #endif //CAVSSTORAGE_H
