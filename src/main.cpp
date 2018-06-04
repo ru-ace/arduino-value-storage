@@ -9,9 +9,13 @@
 #include "avsDebug.h"
 
 #include "cavsProviderEEPROM.h"
+#include "cavsProviderAT24CX.h"
 #include "cavsStorage.h"
 
 cavsProviderEEPROM avsProviderEEPROM;
+#ifdef AVS_CONFIG_CURRENT_PROJECT
+cavsProviderAT24CX avsProviderAT24CX;
+#endif //AVS_CONFIG_CURRENT_PROJECT
 cavsStorage *avs;
 
 void avs_erase_eeprom();
@@ -25,10 +29,13 @@ void setup()
 {
 
     AVS_DEBUG_START;
-    avs_erase_eeprom();
+    //avs_erase_eeprom();
     AVS_DEBUG_LOG_FREEMEM;
-
+#ifdef AVS_CONFIG_CURRENT_PROJECT
+    avs = new cavsStorage(&avsProviderEEPROM, &avsProviderAT24CX);
+#else
     avs = new cavsStorage(&avsProviderEEPROM, &avsProviderEEPROM);
+#endif //AVS_CONFIG_CURRENT_PROJECT
     //AVS_DEBUG_DUMP_EEPROM;
     AVS_DEBUG_LOG_FREEMEM;
     //avs_test_1_simple();

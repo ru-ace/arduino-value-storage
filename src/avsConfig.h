@@ -15,34 +15,49 @@ typedef uint8_t vtail_t;    //type for tail length of Value
 //VAT = Value Allocation Table, contains singly linked lists of sector addresses(byte)
 //DS  = Data Storage, divided by sectors with AVS_DS_SECTOR_SIZE bytes, contains value data
 
-//define only for testing config with 2 vats on single eeprom with 1024 bytes
-//#define AVS_DOUBLE_VAT_TEST_CONFIG
+//! ========== STORAGES CONFIG SELECTOR: DEFINE ONLY ONE =================================
+// Config for current project
+#define AVS_CONFIG_CURRENT_PROJECT
 
-#ifndef AVS_DOUBLE_VAT_TEST_CONFIG
+// testing config for single eeprom with 1024 bytes.
+//#define AVS_CONFIG_EEPROM_1K_TEST_SINGLE_VAT
 
+// testing config with 2 vats on single eeprom with 1024 bytes
+//#define AVS_CONFIG_EEPROM_1K_TEST_DOUBLE_VAT
+
+//! ========== END OF DEFINE ONLY ONE ====================================================
+
+#ifdef AVS_CONFIG_CURRENT_PROJECT
+//Config for current project
+#define AVS_VAT_OFFSET 0     // offset address for vat in provider
+#define AVS_VAT_COUNT 4      // amout of VA Tables
+#define AVS_VAT_FREE_ID 0    // id in VAT = free sector
+#define AVS_VAT_END_ID 0xFF  // id in VAT = end of var
+#define AVS_DS_OFFSET 0      // offset address for ds in provider
+#define AVS_DS_SECTOR_SIZE 4 // bytes in sector
+#endif                       //AVS_CONFIG_EEPROM_1K_TEST_SINGLE_VAT
+
+#ifdef AVS_CONFIG_EEPROM_1K_TEST_SINGLE_VAT
 //testing config for single eeprom with 1024 bytes.
-#define AVS_VAT_OFFSET 0    // offset address for vat in provider
-#define AVS_VAT_COUNT 1     // amout of VA Tables
-#define AVS_VAT_FREE_ID 0   // id in VAT = free sector
-#define AVS_VAT_END_ID 0xFF // id in VAT = end of var
-
+#define AVS_VAT_OFFSET 0     // offset address for vat in provider
+#define AVS_VAT_COUNT 1      // amout of VA Tables
+#define AVS_VAT_FREE_ID 0    // id in VAT = free sector
+#define AVS_VAT_END_ID 0xFF  // id in VAT = end of var
 #define AVS_DS_OFFSET 256    // offset address for ds in provider
 #define AVS_DS_SECTOR_SIZE 3 // bytes in sector
+#endif                       //AVS_CONFIG_EEPROM_1K_TEST_SINGLE_VAT
 
-#else                       //AVS_DOUBLE_VAT_TEST_CONFIG
-
+#ifdef AVS_CONFIG_EEPROM_1K_TEST_DOUBLE_VAT
 //testing config with 2 vats on single eeprom with 1024 bytes
-#define AVS_VAT_OFFSET 0    // offset address for vat in provider
-#define AVS_VAT_COUNT 2     // amout of VA Tables
-#define AVS_VAT_FREE_ID 0   // id in VAT = free sector
-#define AVS_VAT_END_ID 0xFF // id in VAT = end of var
-
+#define AVS_VAT_OFFSET 0     // offset address for vat in provider
+#define AVS_VAT_COUNT 2      // amout of VA Tables
+#define AVS_VAT_FREE_ID 0    // id in VAT = free sector
+#define AVS_VAT_END_ID 0xFF  // id in VAT = end of var
 #define AVS_DS_OFFSET 512    // offset address for ds in provider
 #define AVS_DS_SECTOR_SIZE 1 // bytes in sector
+#endif                       //AVS_CONFIG_EEPROM_1K_TEST_DOUBLE_VAT
 
-#endif //AVS_DOUBLE_VAT_TEST_CONFIG
-
-//Value ID structure(2 bytes, letter=bit) : TTTTVVVV AAAAAAAA
+//value_id structure(2 bytes, letter=bit) : TTTTVVVV AAAAAAAA
 //T = length of tail in last sector in bytes (for root Value store in vat[AVS_VAT_END_ID])
 //V = id of VAT
 //A = head address in VAT
