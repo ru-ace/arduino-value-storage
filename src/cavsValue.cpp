@@ -4,6 +4,8 @@
 // https://opensource.org/licenses/MIT
 
 #include "cavsValue.h"
+
+//#define AVS_DEBUG
 #include "avsDebug.h"
 
 cavsValue::cavsValue(cavsStorage *avsStorage)
@@ -34,6 +36,9 @@ bool cavsValue::create(int length)
 void cavsValue::open(valueid_t value_id, uint8_t open_mode)
 {
     _avs->parse_value_id(value_id, &_vat_id, &_vat_head_address, &_tail_length);
+    AVS_DEBUG_LOG("_vat_id = ", _vat_id);
+    AVS_DEBUG_LOG("_vat_head_address = ", _vat_head_address);
+    AVS_DEBUG_LOG("_tail_length = ", _tail_length);
 
     _offset = 0;
     _offset_address = _vat_head_address;
@@ -91,9 +96,6 @@ void cavsValue::open(valueid_t value_id, uint8_t open_mode)
     default:
         break;
     }
-
-    AVS_DEBUG_LOG("_vat_id = ", _vat_id);
-    AVS_DEBUG_LOG("_vat_head_address = ", _vat_head_address);
     AVS_DEBUG_LOG("_vat_tail_address = ", _vat_tail_address);
     AVS_DEBUG_LOG("_allocated_sectors = ", _allocated_sectors);
     AVS_DEBUG_LOG("_length = ", _length);
@@ -103,6 +105,10 @@ valueid_t cavsValue::close()
 {
     _tail_length = _length % AVS_DS_SECTOR_SIZE;
     _tail_length = (_tail_length == 0 && _length >= AVS_DS_SECTOR_SIZE) ? AVS_DS_SECTOR_SIZE : _tail_length;
+
+    AVS_DEBUG_LOG("_vat_id = ", _vat_id);
+    AVS_DEBUG_LOG("_vat_head_address = ", _vat_head_address);
+    AVS_DEBUG_LOG("_tail_length = ", _tail_length);
 
     if (_is_root_value)
     {
@@ -131,7 +137,7 @@ int cavsValue::offset()
 void cavsValue::seek(int offset)
 {
 
-    //AVS_DEBUG_LOG("offset = ", offset);
+    AVS_DEBUG_LOG("offset = ", offset);
     int delta = offset - _offset;
     //AVS_DEBUG_LOG("delta = ", delta);
     if (delta == 0)
@@ -186,20 +192,31 @@ void cavsValue::seek(int offset)
 
 void cavsValue::trim(int length)
 {
-    length = length == -1 ? _offset + 1 : length;
-    if (length >= _length)
+    AVS_DEBUG_LOG("================ TRIM ============");
+    AVS_DEBUG_LOG("length = ", length);
+    AVS_DEBUG_LOG("_length = ", _length);
+    int new_length = length == -1 ? _offset + 1 : length;
+    AVS_DEBUG_LOG("new_length = ", new_length);
+    if (new_length >= _length)
         return;
 
-    this->seek(length - 1);
+    this->seek(new_length - 1);
     uint8_t _next_vat_addtess = _avs->vat_read(_vat_id, _offset_address);
+    AVS_DEBUG_LOG("_next_vat_addtess = ", _next_vat_addtess);
     if (_next_vat_addtess != AVS_VAT_END_ID)
     {
         _avs->vat_write(_vat_id, _offset_address, AVS_VAT_END_ID);
         _vat_tail_address = _offset_address;
         _avs->free(_avs->create_value_id(_vat_id, _next_vat_addtess, 0));
     }
-
-    _length = length;
+    _length = new_length;
+    _tail_length = _length % AVS_DS_SECTOR_SIZE;
+    _tail_length = (_tail_length == 0 && _length >= AVS_DS_SECTOR_SIZE) ? AVS_DS_SECTOR_SIZE : _tail_length;
+    AVS_DEBUG_LOG("_vat_head_address = ", _vat_head_address);
+    AVS_DEBUG_LOG("_vat_tail_address = ", _vat_tail_address);
+    AVS_DEBUG_LOG("_tail_length = ", _tail_length);
+    AVS_DEBUG_LOG("_length = ", _length);
+    AVS_DEBUG_LOG("================ TRIM ============");
 }
 
 void cavsValue::read(uint8_t *data, int data_length)
@@ -236,7 +253,7 @@ String *cavsValue::read(int data_length)
         data_length = _length - _offset;
 
     for (int i = 0; i < data_length; i++)
-        data_str += (char)this->read8();
+        data_str->concat((char)this->read8());
 
     return data_str;
 }

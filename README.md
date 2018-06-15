@@ -81,7 +81,7 @@ Useful examples of usage you may found in [main.cpp]
 
 [CHANGELOG]: ./CHANGELOG.md
 [LICENSE]: ./LICENSE
-[version-badge]: https://img.shields.io/badge/version-0.9.0_alpha-red.svg
+[version-badge]: https://img.shields.io/badge/version-0.9.1_alpha-red.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [avsConfig.h]: ./src/avsConfig.h
 [main.cpp]: ./src/main.cpp

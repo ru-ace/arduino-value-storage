@@ -24,6 +24,7 @@ void avs_test_1_simple();
 void avs_test_2_variable_list_of_values();
 void avs_test_3_seek();
 void avs_test_4_multi_vat();
+void avs_test_5_String_methods();
 
 void setup()
 {
@@ -39,12 +40,39 @@ void setup()
     //AVS_DEBUG_DUMP_EEPROM;
     AVS_DEBUG_LOG_FREEMEM;
     //avs_test_1_simple();
-    avs_test_2_variable_list_of_values();
+    //avs_test_2_variable_list_of_values();
     //avs_test_3_seek();
     //avs_test_4_multi_vat();
+    avs_test_5_String_methods();
     AVS_DEBUG_LOG_FREEMEM;
     AVS_DEBUG_LOG("That's all folks!");
 }
+
+void avs_test_5_String_methods()
+{
+    avs->format();
+
+    AVS_DEBUG_LOG(" ================= Insert val [0123456789]=================");
+    String *date_str = new String("0123456789");
+    valueid_t val_id = avs->insert(date_str);
+    AVS_DEBUG_LOG("val_id = ", val_id);
+    AVS_DEBUG_LOG("val_id_bin = ", String(val_id, BIN).c_str());
+    delete date_str;
+
+    AVS_DEBUG_LOG(" ================= Update val [ABCDE]=================");
+    date_str = new String("ABCDE");
+    val_id = avs->update(val_id, date_str);
+    AVS_DEBUG_LOG("val_id = ", val_id);
+    AVS_DEBUG_LOG("val_id_bin = ", String(val_id, BIN).c_str());
+
+    delete date_str;
+    AVS_DEBUG_DUMP_EEPROM;
+    AVS_DEBUG_LOG(" ================= Select val =================");
+    date_str = avs->select(val_id);
+    AVS_DEBUG_LOG("date_str = ", date_str->c_str());
+    delete date_str;
+}
+
 void avs_test_4_multi_vat()
 {
     avs->format();

@@ -8,7 +8,7 @@
 
 // ==================== eeprom dumper
 
-#define AVS_DEBUG_EEPROM_VALUES_IN_LINE 32
+#define AVS_DEBUG_EEPROM_VALUES_IN_LINE 16
 #define AVS_DEBUG_EEPROM_LINES 32
 void AVS_DEBUG_freeRam()
 {

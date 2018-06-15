@@ -4,6 +4,8 @@
 // https://opensource.org/licenses/MIT
 
 #include "cavsStorage.h"
+
+//#define AVS_DEBUG
 #include "avsDebug.h"
 
 cavsStorage::cavsStorage(cavsProvider *vatProvider, cavsProvider *dsProvider)
@@ -27,9 +29,9 @@ valueid_t cavsStorage::create_value_id(vatid_t vat_id, uint8_t vat_address, vtai
 }
 void cavsStorage::parse_value_id(valueid_t value_id, vatid_t *vat_id, uint8_t *vat_address, vtail_t *tail_length)
 {
-    *vat_id = (vatid_t)((value_id & AVS_VALUE_ID_VAT_ID_MASK) >> AVS_VALUE_ID_VAT_ID_SHIFT);
-    *vat_address = (uint8_t)(value_id & AVS_VALUE_ID_VAT_ADDRESS_MASK);
-    *tail_length = (vtail_t)((value_id & AVS_VALUE_ID_TAIL_LENGTH_MASK) >> AVS_VALUE_ID_TAIL_LENGTH_SHIFT);
+    *(vat_id) = (vatid_t)((valueid_t)(value_id & AVS_VALUE_ID_VAT_ID_MASK) >> AVS_VALUE_ID_VAT_ID_SHIFT);
+    *(vat_address) = (uint8_t)(value_id & AVS_VALUE_ID_VAT_ADDRESS_MASK);
+    *(tail_length) = (vtail_t)((valueid_t)(value_id & AVS_VALUE_ID_TAIL_LENGTH_MASK) >> AVS_VALUE_ID_TAIL_LENGTH_SHIFT);
 }
 uint8_t cavsStorage::vat_read(vatid_t vat_id, uint8_t vat_address)
 {
@@ -216,7 +218,8 @@ valueid_t cavsStorage::update(valueid_t value_id, String *data_str)
     cavsValue *val = new cavsValue(this, value_id);
     int old_length = val->length();
     int data_length = data_str->length();
-
+    AVS_DEBUG_LOG("old_length = ", old_length);
+    AVS_DEBUG_LOG("data_length = ", data_length);
     val->write(data_str);
     if (old_length > data_length)
         val->trim(data_length);
@@ -249,7 +252,7 @@ void cavsStorage::free(valueid_t value_id)
     {
         uint8_t next_vat_address = vat_read(vat_id, vat_address);
         vat_write(vat_id, vat_address, AVS_VAT_FREE_ID);
-        vat_freespace[value_id]++;
+        vat_freespace[vat_id]++;
         if (next_vat_address == AVS_VAT_END_ID || next_vat_address == AVS_VAT_FREE_ID)
         {
             //next_vat_address == AVS_VAT_FREE_ID - bad scenario, means unfinished write in past
@@ -275,9 +278,9 @@ uint8_t *cavsStorage::select(valueid_t value_id, int *length)
 
 String *cavsStorage::select(valueid_t value_id)
 {
-    String *data_str;
+    AVS_DEBUG_LOG("select String with value_id = ", value_id);
     cavsValue *val = new cavsValue(this, value_id);
-    data_str = val->read();
+    String *data_str = val->read();
     delete val;
     return data_str;
 }
