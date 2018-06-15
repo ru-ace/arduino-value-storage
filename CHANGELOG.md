@@ -32,7 +32,7 @@ This file contains changelog of [Arduino Value Storage Library](https://github.c
 
 
 [Unreleased]: https://github.com/ru-ace/arduino-value-storage/compare/v0.9.1-alpha...HEAD
-[0.9.1-alpha]: https://github.com/ru-ace/arduino-value-storage/compare/v0.9.0-alpha...0.9.1-alpha
+[0.9.1-alpha]: https://github.com/ru-ace/arduino-value-storage/compare/v0.9.0-alpha...v0.9.1-alpha
 
 [cavsStorage]: ./src/cavsStorage.h
 [cavsValue]: ./src/cavsValue.h
