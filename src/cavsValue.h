@@ -9,6 +9,9 @@
 #include "cavsStorage.h"
 class cavsStorage;
 
+#define AVS_VALUE_OPEN_DEFAULT 0 // Set offset = 0 after open
+#define AVS_VALUE_OPEN_APPEND 1  // Set offest = _length after open
+
 class cavsValue
 {
 private:
@@ -30,10 +33,10 @@ private:
 
 public:
   cavsValue(cavsStorage *avsStorage);
-  cavsValue(cavsStorage *avsStorage, valueid_t value_id);
+  cavsValue(cavsStorage *avsStorage, valueid_t value_id, uint8_t open_mode = AVS_VALUE_OPEN_DEFAULT);
 
   bool create(int length = 0);
-  void open(valueid_t value_id);
+  void open(valueid_t value_id, uint8_t open_mode = AVS_VALUE_OPEN_DEFAULT);
   valueid_t close();
 
   bool eof();
@@ -43,14 +46,16 @@ public:
   void trim(int length = -1);
 
   void read(uint8_t *data, int data_length);
+  String *read(int data_length = -1);
   uint8_t read8();
-  uint16_t read16();
-  uint32_t read32();
 
   bool write(uint8_t *data, int data_length);
+  bool write(String *data_str);
   bool write8(uint8_t data);
-  bool write16(uint16_t data);
-  bool write32(uint32_t data);
+
+  bool append(uint8_t *data, int data_length);
+  uint8_t *substr(int pos, int length);
+  bool replace(int pos, uint8_t *data, int data_length);
 };
 
 #endif //CAVSVALUE_H

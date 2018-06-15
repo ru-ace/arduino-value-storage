@@ -60,8 +60,24 @@ cavsValue *cavsStorage::value_add()
 
 valueid_t cavsStorage::insert(uint8_t *data, int data_length)
 {
-    return update(allocate(get_emptiest_vat_id(), data_length), data, data_length);
+    valueid_t value_id = allocate(get_emptiest_vat_id(), data_length);
+    if (value_id != AVS_NOTSET_VALUE_ID)
+        value_id = update(value_id, data, data_length);
+    return value_id;
 }
+
+valueid_t cavsStorage::insert(String *data_str)
+{
+    valueid_t value_id = allocate(get_emptiest_vat_id(), data_str->length());
+    if (value_id != AVS_NOTSET_VALUE_ID)
+    {
+        cavsValue *val = new cavsValue(this, value_id);
+        val->write(data_str);
+        delete val;
+    }
+    return value_id;
+}
+
 bool cavsStorage::start()
 {
     bool ok = true;
@@ -171,7 +187,7 @@ valueid_t cavsStorage::move(valueid_t src_value_id, vatid_t dst_vat_id)
     cavsValue *dst_val = new cavsValue(this, dst_value_id);
     for (int i = 0; i < length; i++)
     {
-        dst_val->write8(src_val->read8());
+        dst_val->write(src_val->read());
     }
     delete src_val;
     free(src_value_id);
@@ -195,18 +211,36 @@ valueid_t cavsStorage::update(valueid_t value_id, uint8_t *data, int data_length
     return new_value_id;
 }
 
+valueid_t cavsStorage::update(valueid_t value_id, String *data_str)
+{
+    cavsValue *val = new cavsValue(this, value_id);
+    int old_length = val->length();
+    int data_length = data_str->length();
+
+    val->write(data_str);
+    if (old_length > data_length)
+        val->trim(data_length);
+    valueid_t new_value_id = val->close();
+    delete val;
+    return new_value_id;
+}
+
 valueid_t cavsStorage::replace(valueid_t value_id, int pos, uint8_t *data, int data_length)
 {
     cavsValue *val = new cavsValue(this, value_id);
-    val->seek(pos);
-    val->write(data, data_length);
-    valueid_t new_value_id = val->close();
+    valueid_t new_value_id = AVS_NOTSET_VALUE_ID;
+    if (val->replace(pos, data, data_length))
+    {
+        new_value_id = val->close();
+    }
     delete val;
     return new_value_id;
 }
 
 void cavsStorage::free(valueid_t value_id)
 {
+    if (value_id == AVS_NOTSET_VALUE_ID)
+        return;
     vatid_t vat_id;
     uint8_t vat_address;
     vtail_t tail_length;
@@ -239,12 +273,19 @@ uint8_t *cavsStorage::select(valueid_t value_id, int *length)
     return data;
 }
 
+String *cavsStorage::select(valueid_t value_id)
+{
+    String *data_str;
+    cavsValue *val = new cavsValue(this, value_id);
+    data_str = val->read();
+    delete val;
+    return data_str;
+}
+
 uint8_t *cavsStorage::substr(valueid_t value_id, int pos, int length)
 {
     cavsValue *val = new cavsValue(this, value_id);
-    uint8_t *data = new uint8_t[length];
-    val->seek(pos);
-    val->read(data, length);
+    uint8_t *data = val->substr(pos, length);
     delete val;
     return data;
 }

@@ -42,6 +42,10 @@ public:
   uint8_t *select(valueid_t value_id, int *length);
   uint8_t *substr(valueid_t value_id, int pos, int length);
 
+  valueid_t insert(String *data_str);
+  valueid_t update(valueid_t value_id, String *data_str);
+  String *select(valueid_t value_id);
+
   cavsValue *value_get(valueid_t value_id);
   cavsValue *value_add();
   void value_del(valueid_t value_id);

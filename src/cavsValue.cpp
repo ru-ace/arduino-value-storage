@@ -11,10 +11,10 @@ cavsValue::cavsValue(cavsStorage *avsStorage)
     this->_avs = avsStorage;
 }
 
-cavsValue::cavsValue(cavsStorage *avsStorage, valueid_t value_id)
+cavsValue::cavsValue(cavsStorage *avsStorage, valueid_t value_id, uint8_t open_mode)
 {
     this->_avs = avsStorage;
-    this->open(value_id);
+    this->open(value_id, open_mode);
 }
 
 bool cavsValue::create(int length)
@@ -31,7 +31,7 @@ bool cavsValue::create(int length)
     }
 }
 
-void cavsValue::open(valueid_t value_id)
+void cavsValue::open(valueid_t value_id, uint8_t open_mode)
 {
     _avs->parse_value_id(value_id, &_vat_id, &_vat_head_address, &_tail_length);
 
@@ -80,6 +80,16 @@ void cavsValue::open(valueid_t value_id)
 
         _length = (vat_elms - 1) * AVS_DS_SECTOR_SIZE + _tail_length;
         _allocated_sectors = vat_elms;
+    }
+
+    switch (open_mode)
+    {
+    case AVS_VALUE_OPEN_APPEND:
+        seek(_length);
+        break;
+    case AVS_VALUE_OPEN_DEFAULT:
+    default:
+        break;
     }
 
     AVS_DEBUG_LOG("_vat_id = ", _vat_id);
@@ -211,6 +221,25 @@ void cavsValue::read(uint8_t *data, int data_length)
         this->seek(_offset + 1);
     }
 }
+uint8_t cavsValue::read8()
+{
+    uint8_t data = 0;
+    this->read(&data, sizeof(uint8_t));
+    return data;
+}
+
+String *cavsValue::read(int data_length)
+{
+
+    String *data_str = new String("");
+    if (data_length == -1)
+        data_length = _length - _offset;
+
+    for (int i = 0; i < data_length; i++)
+        data_str += (char)this->read8();
+
+    return data_str;
+}
 bool cavsValue::write(uint8_t *data, int data_length)
 {
     // space section (allocate new space if needed)
@@ -294,34 +323,39 @@ bool cavsValue::write(uint8_t *data, int data_length)
     }
     return true;
 }
-uint8_t cavsValue::read8()
-{
-    uint8_t data = 0;
-    this->read(&data, sizeof(uint8_t));
-    return data;
-}
-uint16_t cavsValue::read16()
-{
-    uint16_t data = 0;
-    this->read((uint8_t *)data, sizeof(uint16_t));
-    return data;
-}
-uint32_t cavsValue::read32()
-{
-    uint32_t data = 0;
-    this->read((uint8_t *)data, sizeof(uint32_t));
-    return data;
-}
 
 bool cavsValue::write8(uint8_t data)
 {
     return this->write(&data, sizeof(uint8_t));
 }
-bool cavsValue::write16(uint16_t data)
+
+bool cavsValue::write(String *data_str)
 {
-    return this->write((uint8_t *)&data, sizeof(uint16_t));
+    int data_length = data_str->length();
+    for (int i = 0; i < data_length; i++)
+    {
+        if (!this->write8(data_str->charAt(i)))
+        {
+            return false;
+        }
+    }
+    return true;
 }
-bool cavsValue::write32(uint32_t data)
+
+bool cavsValue::append(uint8_t *data, int data_length)
 {
-    return this->write((uint8_t *)&data, sizeof(uint32_t));
+    seek(_length);
+    return this->write(data, data_length);
+}
+bool cavsValue::replace(int pos, uint8_t *data, int data_length)
+{
+    seek(pos);
+    return this->write(data, data_length);
+}
+uint8_t *cavsValue::substr(int pos, int length)
+{
+    uint8_t *data = new uint8_t[length];
+    seek(pos);
+    read(data, length);
+    return data;
 }
