@@ -62,6 +62,8 @@ cavsValue *cavsStorage::value_add()
 
 valueid_t cavsStorage::insert(uint8_t *data, int data_length)
 {
+    data_length = data_length == -1 ? strlen((const char *)data) + 1 : data_length;
+
     valueid_t value_id = allocate(get_emptiest_vat_id(), data_length);
     if (value_id != AVS_NOTSET_VALUE_ID)
         value_id = update(value_id, data, data_length);
@@ -199,6 +201,8 @@ valueid_t cavsStorage::move(valueid_t src_value_id, vatid_t dst_vat_id)
 }
 valueid_t cavsStorage::update(valueid_t value_id, uint8_t *data, int data_length)
 {
+    data_length = data_length == -1 ? strlen((const char *)data) + 1 : data_length;
+
     cavsValue *val = new cavsValue(this, value_id);
     int old_length = val->length();
     AVS_DEBUG_LOG("old_length = ", old_length);

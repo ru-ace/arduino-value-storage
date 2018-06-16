@@ -35,8 +35,8 @@ public:
   valueid_t move(valueid_t src_value_id, vatid_t dst_vat_id);
   void free(valueid_t value_id);
 
-  valueid_t insert(uint8_t *data, int data_length);
-  valueid_t update(valueid_t value_id, uint8_t *data, int data_length);
+  valueid_t insert(uint8_t *data, int data_length = -1);
+  valueid_t update(valueid_t value_id, uint8_t *data, int data_length = -1);
   valueid_t replace(valueid_t value_id, int pos, uint8_t *data, int data_length);
 
   uint8_t *select(valueid_t value_id, int *length);
@@ -47,6 +47,7 @@ public:
   valueid_t update(valueid_t value_id, String *data_str);
   String *select(valueid_t value_id);
 #endif //AVS_USE_ARDUINO_STRING_METHODS
+
   cavsValue *value_get(valueid_t value_id);
   cavsValue *value_add();
   void value_del(valueid_t value_id);

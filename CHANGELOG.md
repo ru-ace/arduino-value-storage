@@ -13,6 +13,7 @@ This file contains changelog of [Arduino Value Storage Library](https://github.c
 - Add AVS_USE_ARDUINO_STRING_METHODS in [avsConfig.h]. If defined: will declared methods, which are using [Arduino String](https://www.arduino.cc/reference/en/language/variables/data-types/stringobject/):
   - [cavsStorage]::[insert, select, update] 
   - [cavsValue]::[read, write]
+- data_length param in methods [cavsStorage]::[insert, update] now optional. Use only when data is null-terminated string.   
 
 ## [0.9.1-alpha] - 2018-06-15
 ### Added
