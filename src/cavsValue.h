@@ -46,12 +46,15 @@ public:
   void trim(int length = -1);
 
   void read(uint8_t *data, int data_length);
-  String *read(int data_length = -1);
   uint8_t read8();
 
   bool write(uint8_t *data, int data_length);
-  bool write(String *data_str);
   bool write8(uint8_t data);
+
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
+  String *read(int data_length = -1);
+  bool write(String *data_str);
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 
   bool append(uint8_t *data, int data_length);
   uint8_t *substr(int pos, int length);

@@ -43,13 +43,13 @@ There is two linked classes:
 In first place of TODO list, but if you want try this lib before documentation appears,<br/>there is one non-obvious rule:<br/>
 **If you update *value* and its length was changed - you must save new *value_id* returned by:** 
 
-* *cavsStorage::*[*update()*|*replace()*]
-* *cavsValue::close()* - you must execute this method even for *root_value*, when it was updated and its length was changed (but in case of *root_value* you don't need to save it)  
+* *[cavsStorage]::*[*update()*|*replace()*]
+* *[cavsValue]::close()* - you must execute this method even for *root_value*, when it was updated and its length was changed (but in case of *root_value* you don't need to save it)  
 
 **Cause:** 
 
 * *value_id* contains part of *value*'s length
-* cavsValue::close() - save part of *root_value*'s length in *vat*
+* [cavsValue]::close() - save part of *root_value*'s length in *vat*
 * in future releases *value* may be reallocated to other *vat*, which aslo contains in *value_id* 
 
 **Structure of *value_id* when type is uint16_t:** 

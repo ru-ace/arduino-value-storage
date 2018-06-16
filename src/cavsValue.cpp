@@ -245,6 +245,7 @@ uint8_t cavsValue::read8()
     return data;
 }
 
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
 String *cavsValue::read(int data_length)
 {
 
@@ -257,6 +258,8 @@ String *cavsValue::read(int data_length)
 
     return data_str;
 }
+#endif //AVS_USE_ARDUINO_STRING_METHODS
+
 bool cavsValue::write(uint8_t *data, int data_length)
 {
     // space section (allocate new space if needed)
@@ -346,6 +349,7 @@ bool cavsValue::write8(uint8_t data)
     return this->write(&data, sizeof(uint8_t));
 }
 
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
 bool cavsValue::write(String *data_str)
 {
     int data_length = data_str->length();
@@ -358,6 +362,7 @@ bool cavsValue::write(String *data_str)
     }
     return true;
 }
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 
 bool cavsValue::append(uint8_t *data, int data_length)
 {

@@ -50,6 +50,7 @@ void setup()
 
 void avs_test_5_String_methods()
 {
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
     avs->format();
 
     AVS_DEBUG_LOG(" ================= Insert val [0123456789]=================");
@@ -71,6 +72,9 @@ void avs_test_5_String_methods()
     date_str = avs->select(val_id);
     AVS_DEBUG_LOG("date_str = ", date_str->c_str());
     delete date_str;
+#else  //AVS_USE_ARDUINO_STRING_METHODS
+    AVS_DEBUG_LOG("Please define AVS_USE_ARDUINO_STRING_METHODS in avsConfig.h");
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 }
 
 void avs_test_4_multi_vat()

@@ -67,7 +67,7 @@ valueid_t cavsStorage::insert(uint8_t *data, int data_length)
         value_id = update(value_id, data, data_length);
     return value_id;
 }
-
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
 valueid_t cavsStorage::insert(String *data_str)
 {
     valueid_t value_id = allocate(get_emptiest_vat_id(), data_str->length());
@@ -79,7 +79,7 @@ valueid_t cavsStorage::insert(String *data_str)
     }
     return value_id;
 }
-
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 bool cavsStorage::start()
 {
     bool ok = true;
@@ -189,7 +189,7 @@ valueid_t cavsStorage::move(valueid_t src_value_id, vatid_t dst_vat_id)
     cavsValue *dst_val = new cavsValue(this, dst_value_id);
     for (int i = 0; i < length; i++)
     {
-        dst_val->write(src_val->read());
+        dst_val->write8(src_val->read8());
     }
     delete src_val;
     free(src_value_id);
@@ -212,7 +212,7 @@ valueid_t cavsStorage::update(valueid_t value_id, uint8_t *data, int data_length
     delete val;
     return new_value_id;
 }
-
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
 valueid_t cavsStorage::update(valueid_t value_id, String *data_str)
 {
     cavsValue *val = new cavsValue(this, value_id);
@@ -227,7 +227,7 @@ valueid_t cavsStorage::update(valueid_t value_id, String *data_str)
     delete val;
     return new_value_id;
 }
-
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 valueid_t cavsStorage::replace(valueid_t value_id, int pos, uint8_t *data, int data_length)
 {
     cavsValue *val = new cavsValue(this, value_id);
@@ -275,7 +275,7 @@ uint8_t *cavsStorage::select(valueid_t value_id, int *length)
     delete val;
     return data;
 }
-
+#ifdef AVS_USE_ARDUINO_STRING_METHODS
 String *cavsStorage::select(valueid_t value_id)
 {
     AVS_DEBUG_LOG("select String with value_id = ", value_id);
@@ -284,7 +284,7 @@ String *cavsStorage::select(valueid_t value_id)
     delete val;
     return data_str;
 }
-
+#endif //AVS_USE_ARDUINO_STRING_METHODS
 uint8_t *cavsStorage::substr(valueid_t value_id, int pos, int length)
 {
     cavsValue *val = new cavsValue(this, value_id);
