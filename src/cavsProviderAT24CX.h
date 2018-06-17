@@ -18,7 +18,7 @@ class cavsProviderAT24CX : public cavsProvider
   public:
     cavsProviderAT24CX()
     {
-        Wire.begin();
+        //Wire.begin();
     }
     uint8_t read(int address)
     {
