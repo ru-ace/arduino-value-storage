@@ -273,14 +273,16 @@ void cavsStorage::free(valueid_t value_id)
 uint8_t *cavsStorage::select(valueid_t value_id, int *length)
 {
     cavsValue *val = new cavsValue(this, value_id);
-    *(length) = val->length();
-    uint8_t *data = new uint8_t[*(length)];
-    val->read(data, *(length));
+    int data_length = val->length();
+    if (length != nullptr)
+        *(length) = data_length;
+    uint8_t *data = new uint8_t[data_length];
+    val->read(data, data_length);
     delete val;
     return data;
 }
 #ifdef AVS_USE_ARDUINO_STRING_METHODS
-String *cavsStorage::select(valueid_t value_id)
+String *cavsStorage::selectS(valueid_t value_id)
 {
     AVS_DEBUG_LOG("select String with value_id = ", value_id);
     cavsValue *val = new cavsValue(this, value_id);

@@ -15,7 +15,7 @@ typedef uint8_t vtail_t;    //type for tail length of Value
 /* define AVS_USE_ARDUINO_STRING_METHODS if you want use methods with Arduino String https://www.arduino.cc/reference/en/language/variables/data-types/stringobject/:
   - cavsStorage::[insert, select, update] 
   - cavsValue::[read, write]
-Please note that this will increase firmware size to 2 kb minimum */
+Please note that this will increase firmware size to 1KB minimum */
 //#define AVS_USE_ARDUINO_STRING_METHODS
 
 //VAT = Value Allocation Table, contains singly linked lists of sector addresses(byte)

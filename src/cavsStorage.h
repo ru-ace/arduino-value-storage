@@ -39,13 +39,13 @@ public:
   valueid_t update(valueid_t value_id, uint8_t *data, int data_length = -1);
   valueid_t replace(valueid_t value_id, int pos, uint8_t *data, int data_length);
 
-  uint8_t *select(valueid_t value_id, int *length);
+  uint8_t *select(valueid_t value_id, int *length = nullptr);
   uint8_t *substr(valueid_t value_id, int pos, int length);
 
 #ifdef AVS_USE_ARDUINO_STRING_METHODS
   valueid_t insert(String *data_str);
   valueid_t update(valueid_t value_id, String *data_str);
-  String *select(valueid_t value_id);
+  String *selectS(valueid_t value_id);
 #endif //AVS_USE_ARDUINO_STRING_METHODS
 
   cavsValue *value_get(valueid_t value_id);

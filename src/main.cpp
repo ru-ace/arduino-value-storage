@@ -69,7 +69,7 @@ void avs_test_5_String_methods()
     delete date_str;
     AVS_DEBUG_DUMP_EEPROM;
     AVS_DEBUG_LOG(" ================= Select val =================");
-    date_str = avs->select(val_id);
+    date_str = avs->selectS(val_id);
     AVS_DEBUG_LOG("date_str = ", date_str->c_str());
     delete date_str;
 #else  //AVS_USE_ARDUINO_STRING_METHODS
