@@ -28,22 +28,26 @@ void avs_test_5_String_methods();
 
 void setup()
 {
+    Wire.begin();
 
     AVS_DEBUG_START;
     //avs_erase_eeprom();
     AVS_DEBUG_LOG_FREEMEM;
+    AVS_DEBUG_DUMP_EEPROM;
+
 #ifdef AVS_CONFIG_CURRENT_PROJECT
     avs = new cavsStorage(&avsProviderEEPROM, &avsProviderAT24CX);
+    AVS_DEBUG_DUMP_PROVIDER(&avsProviderAT24CX, 0, 4095);
 #else
     avs = new cavsStorage(&avsProviderEEPROM, &avsProviderEEPROM);
 #endif //AVS_CONFIG_CURRENT_PROJECT
     //AVS_DEBUG_DUMP_EEPROM;
-    AVS_DEBUG_LOG_FREEMEM;
+    //AVS_DEBUG_LOG_FREEMEM;
     //avs_test_1_simple();
     //avs_test_2_variable_list_of_values();
     //avs_test_3_seek();
     //avs_test_4_multi_vat();
-    avs_test_5_String_methods();
+    //avs_test_5_String_methods();
     AVS_DEBUG_LOG_FREEMEM;
     AVS_DEBUG_LOG("That's all folks!");
 }

@@ -15,6 +15,7 @@ This file contains changelog of [Arduino Value Storage Library](https://github.c
   - [cavsValue]::[read, write]
   - [cavsStorage]::select() renamed to [cavsStorage]::selectS() 
 - data_length param in methods [cavsStorage]::[insert, update, select] now optional. Use only when data is null-terminated string. 
+- Fully rewrite storage dumper AVS_DEBUG_DUMP_EEPROM with AVS_DEBUG_DUMP_PROVIDER (previous version was found in forum for fast dump EEPROM)
 
 
 

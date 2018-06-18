@@ -7,16 +7,16 @@
 #define AVSDEBUG_H
 
 #include <Arduino.h>
-
-void AVS_DEBUG_printASCII(uint8_t *buffer);
-void AVS_DEBUG_dump_eeprom();
+#include "cavsProviderEEPROM.h"
+void AVS_DEBUG_dump_provider(cavsProvider *storage, unsigned int start_address, unsigned int end_address);
 void AVS_DEBUG_freeRam();
 
 #ifdef AVS_DEBUG
 
 #define AVS_DEBUG_SERIAL Serial
 
-#define AVS_DEBUG_DUMP_EEPROM AVS_DEBUG_dump_eeprom()
+#define AVS_DEBUG_DUMP_EEPROM AVS_DEBUG_dump_provider(&avsProviderEEPROM, 0, 1023)
+#define AVS_DEBUG_DUMP_PROVIDER(storage, start_address, end_address) AVS_DEBUG_dump_provider(storage, start_address, end_address)
 #define AVS_DEBUG_LOG_FREEMEM AVS_DEBUG_freeRam()
 
 #define AVS_DEBUG_START                                                                   \
@@ -54,6 +54,7 @@ void AVS_DEBUG_freeRam();
 #define AVS_DEBUG_DUMP_EEPROM
 #define AVS_DEBUG_LOG(...)
 #define AVS_DEBUG_LOG_FREEMEM
+#define AVS_DEBUG_DUMP_PROVIDER(...)
 #endif
 
 #endif //AVSDEBUG_H
